@@ -3,16 +3,18 @@ const app = express()
 let config = require('./config.json');
 var http = require('http').Server(app);
 
-var io = require('socket.io')(http);
+var io = require('socket.io')(4000);
 
 const port = config.PORT
 var fs = require('fs');
 let users = require('./users.json')
 app.use(express.json())
 
+
+
 app.get('/',(req,res)=>{
     res.send("hello");
-    
+
 })
 
 app.post('/newuser',(req,res)=>{
@@ -45,4 +47,11 @@ app.post('/newuser',(req,res)=>{
 
 app.post('/newrum')
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+io.on('connection',(socket)=>{
+    console.log("conected")
+})
+
+app.listen(port, () => console.log(`Server runningg on port ${port}!`))
+app.listen(() => {
+    console.log("Socket listening on 4000");
+  })
