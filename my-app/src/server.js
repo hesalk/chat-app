@@ -16,20 +16,32 @@ app.get('/',(req,res)=>{
     res.send("hello");
 
 })
-
+// Creat user
 app.post('/newuser',(req,res)=>{
     let obj = req.body
     let arr = users.names
+    console.log(Object.keys(obj).length)
+    if(Object.keys(obj).length > 1){
+        res.status(400).send("fel data").end()
+        return
+    }
+    if(Object.keys(obj)[0] !== "name"){
+        res.status(400).send("the key must be name").end()
+        console.log("not name")
+        console.log(res.statusCode)
+        return
+    }
+    //check if the user exist
     function exist(n) {
         return n.name === req.body.name
     }
     console.log(users.names.find(exist))
     if(users.names.find(exist)){
-        res.send("User already exist")
-        res.status(400).end();
+        res.status(400);
+        res.send("user exsist")
+        res.end()
         console.log(res.statusCode)
         return 
-        
     }
     arr.push(obj)
     console.log(arr)
@@ -39,9 +51,9 @@ app.post('/newuser',(req,res)=>{
     let data = JSON.stringify(test)
     fs.writeFile('./users.json',data,(err) => {
         if (err) throw err;
-        console.log('The file has been saved!');
+        console.log('The user is created!');
       })
-    res.status(201).end();
+    res.status(201).send("Created").end()
     console.log(res.statusCode)
 })
 
