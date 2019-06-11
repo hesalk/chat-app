@@ -33,12 +33,15 @@ function App() {
   );
 }
 socket.emit("msg",{
-  roomId: "s",
-  user: "states.user",
+  name: "sa",
+  roomname: "states.user",
   message: "t.msg.value",
 })
-socket.on("new",(data)=>{
+socket.on("sendToClient",(data)=>{
   console.log(data)
+})
+socket.on("error",(data)=>{
+  console.error(data)
 })
 
 export default App;

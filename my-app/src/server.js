@@ -9,6 +9,7 @@ const port = config.PORT
 var fs = require('fs');
 let rooms = require('./rooms.json')
 let users = require('./users.json')
+let msgs = require('./msg.json')
 app.use(express.json())
 
 app.get('/chatt',(req,res)=>{
@@ -98,18 +99,27 @@ app.post('/newroom',(req,res)=>{
 })
 app.post('')
 app.post('/newrum')
-
+//send msg
 io.on('connection',(socket)=>{
     console.log("conected")
     socket.on("msg",(data)=>{
+        console.log("new msg has resived")
         console.log(data)
-        console.log("msg")
+        if(Object.keys(data).length>3 || Object.keys(data)[0] !== "name" || Object.keys(data)[1] !== "roomname" || Object.keys(data)[2] !== "message"){
+            io.emit("error","You have sent wrong data format to the server");
+            return
+        }
+        io.emit("sendToClient",data)
+        let arr = msgs.messages
+        arr.push(data);
+        let tosave = {"messages":arr}
+        console.log(tosave)
+        fs.writeFile('./msg.json',JSON.stringify(tosave),(err) => {
+            if (err) throw err;
+            console.log('The room is created!');
+        })
     })
-    io.emit("new",{
-        roomId: "ss",
-        user: "states.user",
-        message: "t.msg.value",
-      })
+    
 })
 
 //send msg
