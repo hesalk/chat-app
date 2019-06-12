@@ -98,6 +98,44 @@ app.post('/newroom',(req,res)=>{
     console.log(res.statusCode)
 })
 app.post('')
+
+//get room list
+app.get("/rooms",(req,res)=>{
+    fs.readFile('rooms.json',(err,data)=>{
+        let str = data.toString()
+        console.log(str)
+        res.send(str)
+    })
+})
+app.get("/allusers",(req,res)=>{
+    fs.readFile('users.json',(err,data)=>{
+        let str = data.toString()
+        console.log(str)
+        res.send(str)
+    })
+})
+
+//check for users in a room
+app.get("/roomusers",(req,res)=>{
+    console.log(req.query)
+    let room = req.query.room
+    console.log(room)
+    //check for all the matching rooms
+    let results = msgs.messages.filter((el)=>{
+        return el.room === room
+    })
+    if(results.length === 0){
+        res.status(204).send("No room with that name").end()
+    }
+    console.log(results)
+    let userarr = [];
+    results.map((x)=>{
+        userarr.push(x.name)
+    })
+    res.status(200)
+    res.send(userarr)
+})
+
 app.post('/newrum')
 //send msg
 io.on('connection',(socket)=>{
@@ -105,7 +143,7 @@ io.on('connection',(socket)=>{
     socket.on("msg",(data)=>{
         console.log("new msg has resived")
         console.log(data)
-        if(Object.keys(data).length>3 || Object.keys(data)[0] !== "name" || Object.keys(data)[1] !== "roomname" || Object.keys(data)[2] !== "message"){
+        if(Object.keys(data).length>3 || Object.keys(data)[0] !== "name" || Object.keys(data)[1] !== "room" || Object.keys(data)[2] !== "message"){
             io.emit("error","You have sent wrong data format to the server");
             return
         }
@@ -122,13 +160,7 @@ io.on('connection',(socket)=>{
     
 })
 
-//send msg
-app.post('/chatt',(req,res)=>{
-    console.log(req.body);
-    let body = req.body;
 
-    res.end()
-})
 
 app.listen(port, () => console.log(`Server runningg on port ${port}!`))
 app.listen(() => {

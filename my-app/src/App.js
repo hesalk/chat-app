@@ -11,11 +11,11 @@ console.log(JSON.stringify(obj2))
 let lol ='{"name":"ffrr"}'; 
 let test = JSON.stringify(obj)
 
-axios.get("http://localhost:8000/newuser")
+axios.get("http://localhost:8000/allusers")
 .then((res)=>{
   console.log(res)
 });
-axios.get("http://localhost:8000/chatt?name=ss")
+axios.get("http://localhost:8000/roomusers?room=states.user")
 .then((res)=>{
   console.log(res)
 });
@@ -34,7 +34,7 @@ function App() {
 }
 socket.emit("msg",{
   name: "sa",
-  roomname: "states.user",
+  room: "states.user",
   message: "t.msg.value",
 })
 socket.on("sendToClient",(data)=>{
